@@ -4,6 +4,18 @@ YouTube Music (ve Windows'ta çalan diğer medya kaynakları) için masaüstünd
 
 > Bu araç **resmî değildir**, YouTube / Google ile bir ilişkisi yoktur. Windows'un **SMTC** (System Media Transport Controls) arayüzü üzerinden çalışır; tarayıcıdaki YouTube Music sekmesi veya masaüstü uygulamaları (Spotify vb.) ne çalıyorsa onu gösterir/kontrol eder.
 
+<p align="center">
+  <img src="kart.png" alt="Kart gorunumu" width="300">
+</p>
+<p align="center">
+  <img src="Compant.png" alt="Kompakt cubuk" width="330"><br>
+  <sub>Kompakt çubuk — ekranın altına yanaşan ince oynatıcı</sub>
+</p>
+<p align="center">
+  <img src="settings.png" alt="Ayarlar" width="230"><br>
+  <sub>Ayarlar — vurgu rengi, görünüm modu, saydamlık</sub>
+</p>
+
 ## Özellikler
 
 - 🎵 **Kapak fotoğrafı**, şarkı adı ve sanatçı (otomatik güncellenir)
