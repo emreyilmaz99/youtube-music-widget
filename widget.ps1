@@ -15,7 +15,8 @@ $script:showEvent = New-Object System.Threading.EventWaitHandle($false, [System.
 
 $settingsPath = Join-Path $PSScriptRoot "settings.json"
 $script:accent = 'FF5C5C'; $script:accentLight = 'FF8A5C'; $script:mode = 'card'; $script:opacity = 0.97
-$script:cardLeft = $null; $script:cardTop = $null; $script:barLeft = $null; $script:barTop = $null
+$script:cardLeft = $null; $script:cardTop = $null; $script:barLeft = $null; $script:barTop = $null; $script:edgeLeft = $null; $script:edgeTop = $null
+$script:edgeOpen = $false; $script:edgeSide = 'right'
 if (Test-Path $settingsPath) {
   try {
     $cfg = Get-Content $settingsPath -Raw | ConvertFrom-Json
@@ -27,6 +28,8 @@ if (Test-Path $settingsPath) {
     if ($null -ne $cfg.cardTop)  { $script:cardTop  = [double]$cfg.cardTop }
     if ($null -ne $cfg.barLeft)  { $script:barLeft  = [double]$cfg.barLeft }
     if ($null -ne $cfg.barTop)   { $script:barTop   = [double]$cfg.barTop }
+    if ($null -ne $cfg.edgeLeft) { $script:edgeLeft = [double]$cfg.edgeLeft }
+    if ($null -ne $cfg.edgeTop)  { $script:edgeTop  = [double]$cfg.edgeTop }
   } catch {}
 }
 
@@ -298,14 +301,19 @@ $script:mgr = Await ([Windows.Media.Control.GlobalSystemMediaTransportControlsSe
         <TextBlock Text="GORUNUM MODU" Foreground="#FF8A8A94" FontSize="9" FontWeight="Bold"
                    FontFamily="Segoe UI" Margin="0,16,0,9"/>
         <StackPanel Orientation="Horizontal">
-          <Border x:Name="ModeCard" CornerRadius="8" Height="30" Width="100" Background="#FF2A2A36"
-                  BorderBrush="White" BorderThickness="0" Cursor="Hand" Margin="0,0,10,0">
+          <Border x:Name="ModeCard" CornerRadius="8" Height="30" Width="72" Background="#FF2A2A36"
+                  BorderBrush="White" BorderThickness="0" Cursor="Hand" Margin="0,0,8,0">
             <TextBlock Text="Kart" Foreground="#FFE8E8EC" FontSize="11" FontFamily="Segoe UI"
                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
           </Border>
-          <Border x:Name="ModeBar" CornerRadius="8" Height="30" Width="100" Background="#FF2A2A36"
+          <Border x:Name="ModeBar" CornerRadius="8" Height="30" Width="72" Background="#FF2A2A36"
+                  BorderBrush="White" BorderThickness="0" Cursor="Hand" Margin="0,0,8,0">
+            <TextBlock Text="Cubuk" Foreground="#FFE8E8EC" FontSize="11" FontFamily="Segoe UI"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+          </Border>
+          <Border x:Name="ModeEdge" CornerRadius="8" Height="30" Width="72" Background="#FF2A2A36"
                   BorderBrush="White" BorderThickness="0" Cursor="Hand">
-            <TextBlock Text="Kompakt cubuk" Foreground="#FFE8E8EC" FontSize="11" FontFamily="Segoe UI"
+            <TextBlock Text="Kenar" Foreground="#FFE8E8EC" FontSize="11" FontFamily="Segoe UI"
                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
           </Border>
         </StackPanel>
@@ -409,6 +417,64 @@ $script:mgr = Await ([Windows.Media.Control.GlobalSystemMediaTransportControlsSe
       </Grid>
     </Border>
 
+    <!-- ============ KENAR: orb + acilir kontrol cubugu ============ -->
+    <Border x:Name="Edge" Margin="10" CornerRadius="32" Visibility="Collapsed">
+      <Border.Background><SolidColorBrush Color="#FF15151C"/></Border.Background>
+      <Border.BorderBrush>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#66FF5C5C" Offset="0"/><GradientStop Color="#22FFFFFF" Offset="1"/></LinearGradientBrush>
+      </Border.BorderBrush>
+      <Border.BorderThickness>1</Border.BorderThickness>
+      <Border.Effect><DropShadowEffect Color="#000000" BlurRadius="20" ShadowDepth="0" Opacity="0.55"/></Border.Effect>
+      <Grid x:Name="EdgeGrid">
+        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+
+        <Border x:Name="EdgeOrb" Grid.Column="1" Width="68" Height="68" CornerRadius="34" Margin="3" Background="#FF2C2C36" Cursor="Hand" ToolTip="Ac / kapat">
+          <Grid>
+            <TextBlock x:Name="EdgeNote" Text="&#x266B;" Foreground="#FF77777F" FontSize="26" FontFamily="Segoe UI Symbol" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Border CornerRadius="34"><Border.Background><ImageBrush x:Name="EdgeArt" Stretch="UniformToFill"/></Border.Background></Border>
+          </Grid>
+        </Border>
+
+        <StackPanel x:Name="EdgeStrip" Grid.Column="0" Orientation="Vertical" VerticalAlignment="Center" Visibility="Collapsed" Margin="14,0,8,0">
+          <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+            <StackPanel Width="96" VerticalAlignment="Center" Margin="0,0,12,0">
+              <TextBlock x:Name="EdgeTitle" Text="Muzik calmiyor" Foreground="#FFF6F6FA" FontSize="12" FontWeight="SemiBold"
+                         FontFamily="Segoe UI" TextTrimming="CharacterEllipsis"/>
+              <TextBlock x:Name="EdgeArtist" Text="Bir sarki baslat" Foreground="#FFA8A8B2" FontSize="10"
+                         FontFamily="Segoe UI" TextTrimming="CharacterEllipsis" Margin="0,1,0,0"/>
+            </StackPanel>
+            <TextBlock x:Name="EdgePrev" Text="&#x23EE;" Foreground="#FFE8E8EC" FontSize="17" FontFamily="Segoe UI Symbol"
+                       Cursor="Hand" Margin="0,0,12,0" VerticalAlignment="Center" ToolTip="Onceki"/>
+            <Border x:Name="EdgePlayWrap" Width="36" Height="36" CornerRadius="18" Cursor="Hand" VerticalAlignment="Center" ToolTip="Oynat/Duraklat">
+              <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#FFFF5C5C" Offset="0"/><GradientStop Color="#FFFF8A5C" Offset="1"/></LinearGradientBrush>
+              </Border.Background>
+              <Border.Effect><DropShadowEffect Color="#FF5C5C" BlurRadius="12" ShadowDepth="0" Opacity="0.55"/></Border.Effect>
+              <TextBlock x:Name="EdgePlay" Text="&#x25B6;" Foreground="White" FontSize="16" FontFamily="Segoe UI Symbol"
+                         HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2,0,0,0"/>
+            </Border>
+            <TextBlock x:Name="EdgeNext" Text="&#x23ED;" Foreground="#FFE8E8EC" FontSize="17" FontFamily="Segoe UI Symbol"
+                       Cursor="Hand" Margin="12,0,14,0" VerticalAlignment="Center" ToolTip="Sonraki"/>
+            <TextBlock x:Name="EdgeMute" Text="&#x1F50A;" Foreground="#FFB8B8C2" FontSize="15" FontFamily="Segoe UI Symbol"
+                       Cursor="Hand" VerticalAlignment="Center" ToolTip="Ses (uzerine gel) - sessiz (tikla)"/>
+            <Popup x:Name="EdgeVolPop" PlacementTarget="{Binding ElementName=EdgeMute}" Placement="Top"
+                   StaysOpen="True" AllowsTransparency="True" PopupAnimation="Fade" HorizontalOffset="-58" VerticalOffset="-2">
+              <Border x:Name="EdgeVolPopBorder" Background="#FF20202A" CornerRadius="10" Padding="13,9" BorderBrush="#33FFFFFF" BorderThickness="1" Margin="8">
+                <Border.Effect><DropShadowEffect Color="#000000" BlurRadius="18" ShadowDepth="0" Opacity="0.6"/></Border.Effect>
+                <Slider x:Name="EdgeVolS" Width="104" Style="{StaticResource Slim}" Foreground="#FFFFFFFF" Minimum="0" Maximum="100" Value="50" VerticalAlignment="Center"/>
+              </Border>
+            </Popup>
+            <TextBlock x:Name="EdgeGear" Text="&#x2699;" Foreground="#FF9A9AA6" FontSize="14" FontFamily="Segoe UI Symbol"
+                       Cursor="Hand" Margin="14,0,9,0" VerticalAlignment="Center" ToolTip="Ayarlar"/>
+            <TextBlock x:Name="EdgeClose" Text="&#x2715;" Foreground="#FF9A9AA6" FontSize="13" FontFamily="Segoe UI"
+                       Cursor="Hand" VerticalAlignment="Center" ToolTip="Kapat"/>
+          </StackPanel>
+          <Slider x:Name="EdgeProg" HorizontalAlignment="Stretch" Style="{StaticResource Slim}" Foreground="#FFFF6B6B"
+                  Minimum="0" Maximum="100" Value="0" Margin="0,4,0,0" ToolTip="Ilerleme"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+
   </Grid>
 </Window>
 "@
@@ -421,7 +487,8 @@ foreach ($n in 'Full','Mini','MiniArt','MiniNote','CardHost','BgArt','TopNote','
                'ArtBrush','NoArt','TrackTitle','TrackArtist','CurT','Prog','TotT',
                'PrevBtn','PlayWrap','PlayBtn','NextBtn','RptBtn','VolS','MuteBtn',
                'Settings','SetClose','SetDone','SwA','SwB','SwC','SwD','SwE','ModeCard','ModeBar','OpacityS',
-               'Bar','BarNoArt','BarArtBrush','BarTitle','BarArtist','BarPrev','BarPlayWrap','BarPlay','BarNext','BarVolS','BarMute','BarGear','BarClose','VolPop','VolPopBorder','BarProg') {
+               'Bar','BarNoArt','BarArtBrush','BarTitle','BarArtist','BarPrev','BarPlayWrap','BarPlay','BarNext','BarVolS','BarMute','BarGear','BarClose','VolPop','VolPopBorder','BarProg',
+               'ModeEdge','Edge','EdgeGrid','EdgeOrb','EdgeNote','EdgeArt','EdgeStrip','EdgeTitle','EdgeArtist','EdgePrev','EdgePlayWrap','EdgePlay','EdgeNext','EdgeProg','EdgeVolS','EdgeMute','EdgeGear','EdgeClose','EdgeVolPop','EdgeVolPopBorder') {
   $ctrl[$n] = $win.FindName($n)
 }
 
@@ -455,28 +522,58 @@ function Apply-Accent {
   $ctrl.BarPlayWrap.Background  = CGrad ("#FF"+$m) ("#FF"+$l)
   $ctrl.BarPlayWrap.Effect.Color = CClr ("#FF"+$m)
   $ctrl.BarProg.Foreground       = CBrush ("#FF"+$m)
+  $ctrl.Edge.BorderBrush         = CGrad ("#66"+$m) "#22FFFFFF"
+  $ctrl.EdgePlayWrap.Background    = CGrad ("#FF"+$m) ("#FF"+$l)
+  $ctrl.EdgePlayWrap.Effect.Color  = CClr ("#FF"+$m)
+  $ctrl.EdgeProg.Foreground        = CBrush ("#FF"+$m)
   # secili swatch'i isaretle
   foreach ($k in 'SwA','SwB','SwC','SwD','SwE') {
     $ctrl[$k].BorderThickness = if ($script:presets[$k][0] -eq $m) { '2.5' } else { '0' }
   }
 }
 function Show-Settings {
-  $ctrl.Full.Visibility='Collapsed'; $ctrl.Bar.Visibility='Collapsed'; $ctrl.Mini.Visibility='Collapsed'
+  $ctrl.Full.Visibility='Collapsed'; $ctrl.Bar.Visibility='Collapsed'; $ctrl.Mini.Visibility='Collapsed'; $ctrl.Edge.Visibility='Collapsed'
   $ctrl.Settings.Visibility='Visible'; $win.UpdateLayout()
   Clamp-OnScreen   # mevcut konumda kalsin, sadece tum-ekran disina tasarsa iceri al
 }
 function Hide-Settings { $ctrl.Settings.Visibility='Collapsed'; Set-Mode $script:mode }
+function Set-EdgeSide {
+  # orb ekranin hangi yarisinda -> cubuk ic tarafa acilsin
+  $cx = $win.Left + $win.ActualWidth / 2
+  $sc = [System.Windows.SystemParameters]::VirtualScreenLeft + [System.Windows.SystemParameters]::VirtualScreenWidth / 2
+  if ($cx -gt $sc) {
+    $script:edgeSide = 'right'
+    [System.Windows.Controls.Grid]::SetColumn($ctrl.EdgeOrb, 1); [System.Windows.Controls.Grid]::SetColumn($ctrl.EdgeStrip, 0)
+  } else {
+    $script:edgeSide = 'left'
+    [System.Windows.Controls.Grid]::SetColumn($ctrl.EdgeOrb, 0); [System.Windows.Controls.Grid]::SetColumn($ctrl.EdgeStrip, 1)
+  }
+}
+function Toggle-Edge {
+  $script:edgeOpen = -not $script:edgeOpen
+  $oldW = $win.ActualWidth
+  $ctrl.EdgeStrip.Visibility = if ($script:edgeOpen) { 'Visible' } else { 'Collapsed' }
+  $win.UpdateLayout()
+  $newW = $win.ActualWidth
+  if ($script:edgeSide -eq 'right') { $win.Left = $win.Left + ($oldW - $newW) }   # sag kenarda sabit kal
+  Clamp-OnScreen
+}
 function Set-Mode($m) {
   $script:mode = $m
-  $ctrl.Settings.Visibility='Collapsed'
+  $ctrl.Settings.Visibility='Collapsed'; $ctrl.Mini.Visibility='Collapsed'
+  $ctrl.Full.Visibility='Collapsed'; $ctrl.Bar.Visibility='Collapsed'; $ctrl.Edge.Visibility='Collapsed'
   if ($m -eq 'bar') {
-    $ctrl.Full.Visibility='Collapsed'; $ctrl.Mini.Visibility='Collapsed'; $ctrl.Bar.Visibility='Visible'
-    $win.UpdateLayout()
+    $ctrl.Bar.Visibility='Visible'; $win.UpdateLayout()
     if ($null -ne $script:barLeft) { $win.Left = $script:barLeft; $win.Top = $script:barTop }
     else { $wa = [System.Windows.SystemParameters]::WorkArea; $win.Left = $wa.Left + ($wa.Width - $win.ActualWidth)/2; $win.Top = $wa.Bottom - $win.ActualHeight - 2 }
+  } elseif ($m -eq 'edge') {
+    $script:edgeOpen = $false; $ctrl.EdgeStrip.Visibility='Collapsed'
+    $ctrl.Edge.Visibility='Visible'; $win.UpdateLayout()
+    if ($null -ne $script:edgeLeft) { $win.Left = $script:edgeLeft; $win.Top = $script:edgeTop }
+    else { $wa = [System.Windows.SystemParameters]::WorkArea; $win.Left = $wa.Right - $win.ActualWidth - 2; $win.Top = $wa.Top + ($wa.Height - $win.ActualHeight)/2 }
+    Set-EdgeSide
   } else {
-    $ctrl.Bar.Visibility='Collapsed'; $ctrl.Mini.Visibility='Collapsed'; $ctrl.Full.Visibility='Visible'
-    $win.UpdateLayout()
+    $ctrl.Full.Visibility='Visible'; $win.UpdateLayout()
     if ($null -ne $script:cardLeft) { $win.Left = $script:cardLeft; $win.Top = $script:cardTop }
     else { $win.Left = 40; $win.Top = 180 }
   }
@@ -484,10 +581,12 @@ function Set-Mode($m) {
   Save-Settings
   $ctrl.ModeCard.BorderThickness = if ($m -eq 'card') { '2' } else { '0' }
   $ctrl.ModeBar.BorderThickness  = if ($m -eq 'bar')  { '2' } else { '0' }
+  $ctrl.ModeEdge.BorderThickness = if ($m -eq 'edge') { '2' } else { '0' }
 }
 function Save-Settings {
   try { @{ accent=$script:accent; accentLight=$script:accentLight; mode=$script:mode; opacity=$script:opacity
-           cardLeft=$script:cardLeft; cardTop=$script:cardTop; barLeft=$script:barLeft; barTop=$script:barTop } | ConvertTo-Json | Set-Content $settingsPath -Encoding utf8 } catch {}
+           cardLeft=$script:cardLeft; cardTop=$script:cardTop; barLeft=$script:barLeft; barTop=$script:barTop
+           edgeLeft=$script:edgeLeft; edgeTop=$script:edgeTop } | ConvertTo-Json | Set-Content $settingsPath -Encoding utf8 } catch {}
 }
 function Clamp-OnScreen {
   # tum monitorleri kapsayan sanal ekran (2. ekran konumu korunsun)
@@ -502,6 +601,7 @@ function Clamp-OnScreen {
 }
 function Save-Pos {
   if ($script:mode -eq 'bar') { $script:barLeft = $win.Left; $script:barTop = $win.Top }
+  elseif ($script:mode -eq 'edge') { $script:edgeLeft = $win.Left; $script:edgeTop = $win.Top; Set-EdgeSide }
   else { $script:cardLeft = $win.Left; $script:cardTop = $win.Top }
   Save-Settings
 }
@@ -528,7 +628,7 @@ function Fmt-Time([double]$sec) { if ($sec -lt 0){$sec=0}; ("{0}:{1:00}" -f [int
 
 function Load-Thumbnail($props) {
   try {
-    if (-not $props.Thumbnail) { $ctrl.ArtBrush.ImageSource=$null; $ctrl.MiniArt.ImageSource=$null; $ctrl.BarArtBrush.ImageSource=$null; $ctrl.BgArt.Source=$null; $ctrl.NoArt.Visibility='Visible'; $ctrl.BarNoArt.Visibility='Visible'; return }
+    if (-not $props.Thumbnail) { $ctrl.ArtBrush.ImageSource=$null; $ctrl.MiniArt.ImageSource=$null; $ctrl.BarArtBrush.ImageSource=$null; $ctrl.EdgeArt.ImageSource=$null; $ctrl.BgArt.Source=$null; $ctrl.NoArt.Visibility='Visible'; $ctrl.BarNoArt.Visibility='Visible'; return }
     $ras = Await ($props.Thumbnail.OpenReadAsync()) ([Windows.Storage.Streams.IRandomAccessStreamWithContentType])
     if (-not $ras) { return }
     $net = $script:asStreamM.Invoke($null, @($ras))
@@ -537,7 +637,7 @@ function Load-Thumbnail($props) {
     $ms.Position = 0
     $bmp = New-Object System.Windows.Media.Imaging.BitmapImage
     $bmp.BeginInit(); $bmp.CacheOption = [System.Windows.Media.Imaging.BitmapCacheOption]::OnLoad; $bmp.StreamSource = $ms; $bmp.EndInit(); $bmp.Freeze()
-    $ctrl.ArtBrush.ImageSource = $bmp; $ctrl.MiniArt.ImageSource = $bmp; $ctrl.BarArtBrush.ImageSource = $bmp; $ctrl.BgArt.Source = $bmp
+    $ctrl.ArtBrush.ImageSource = $bmp; $ctrl.MiniArt.ImageSource = $bmp; $ctrl.BarArtBrush.ImageSource = $bmp; $ctrl.EdgeArt.ImageSource = $bmp; $ctrl.BgArt.Source = $bmp
     $ctrl.NoArt.Visibility = 'Collapsed'; $ctrl.BarNoArt.Visibility = 'Collapsed'
     $ms.Dispose()
   } catch { }
@@ -548,17 +648,18 @@ function Update-Media {
   if (-not $s) {
     $ctrl.TrackTitle.Text="Muzik calmiyor"; $ctrl.TrackArtist.Text="Bir sarki baslat"; $ctrl.AppName.Text="MUZIK"
     $ctrl.BarTitle.Text="Muzik calmiyor"; $ctrl.BarArtist.Text="Bir sarki baslat"
-    $ctrl.PlayBtn.Text=[string][char]0x25B6; $ctrl.BarPlay.Text=[string][char]0x25B6
-    $ctrl.ArtBrush.ImageSource=$null; $ctrl.MiniArt.ImageSource=$null; $ctrl.BarArtBrush.ImageSource=$null; $ctrl.BgArt.Source=$null
+    $ctrl.EdgeTitle.Text="Muzik calmiyor"; $ctrl.EdgeArtist.Text="Bir sarki baslat"
+    $ctrl.PlayBtn.Text=[string][char]0x25B6; $ctrl.BarPlay.Text=[string][char]0x25B6; $ctrl.EdgePlay.Text=[string][char]0x25B6
+    $ctrl.ArtBrush.ImageSource=$null; $ctrl.MiniArt.ImageSource=$null; $ctrl.BarArtBrush.ImageSource=$null; $ctrl.EdgeArt.ImageSource=$null; $ctrl.BgArt.Source=$null
     $ctrl.NoArt.Visibility='Visible'; $ctrl.BarNoArt.Visibility='Visible'
-    $ctrl.CurT.Text="0:00"; $ctrl.TotT.Text="0:00"; if (-not $script:scrub) { $ctrl.Prog.Value=0; $ctrl.BarProg.Value=0 }
+    $ctrl.CurT.Text="0:00"; $ctrl.TotT.Text="0:00"; if (-not $script:scrub) { $ctrl.Prog.Value=0; $ctrl.BarProg.Value=0; $ctrl.EdgeProg.Value=0 }
     $script:lastTitle=$null; return
   }
   try {
     $pb = $s.GetPlaybackInfo()
     $playing = ("$($pb.PlaybackStatus)" -eq 'Playing')
-    if ($playing) { $ctrl.PlayBtn.Text=[string][char]0x23F8; $ctrl.PlayBtn.Margin='0,0,0,0'; $ctrl.BarPlay.Text=[string][char]0x23F8; $ctrl.BarPlay.Margin='0,0,0,0' }
-    else          { $ctrl.PlayBtn.Text=[string][char]0x25B6; $ctrl.PlayBtn.Margin='2,0,0,0'; $ctrl.BarPlay.Text=[string][char]0x25B6; $ctrl.BarPlay.Margin='2,0,0,0' }
+    if ($playing) { $ctrl.PlayBtn.Text=[string][char]0x23F8; $ctrl.PlayBtn.Margin='0,0,0,0'; $ctrl.BarPlay.Text=[string][char]0x23F8; $ctrl.BarPlay.Margin='0,0,0,0'; $ctrl.EdgePlay.Text=[string][char]0x23F8; $ctrl.EdgePlay.Margin='0,0,0,0' }
+    else          { $ctrl.PlayBtn.Text=[string][char]0x25B6; $ctrl.PlayBtn.Margin='2,0,0,0'; $ctrl.BarPlay.Text=[string][char]0x25B6; $ctrl.BarPlay.Margin='2,0,0,0'; $ctrl.EdgePlay.Text=[string][char]0x25B6; $ctrl.EdgePlay.Margin='2,0,0,0' }
 
     if ($pb.Controls.IsRepeatEnabled) {
       $mode = "$($pb.AutoRepeatMode)"
@@ -576,8 +677,9 @@ function Update-Media {
       if (-not $script:scrub) {
         $ctrl.Prog.Maximum = $endSec; $ctrl.Prog.Value = $posSec; $ctrl.CurT.Text = Fmt-Time $posSec
         $ctrl.BarProg.Maximum = $endSec; $ctrl.BarProg.Value = $posSec
+        $ctrl.EdgeProg.Maximum = $endSec; $ctrl.EdgeProg.Value = $posSec
       }
-    } else { $ctrl.CurT.Text="0:00"; $ctrl.TotT.Text="0:00"; if (-not $script:scrub) { $ctrl.Prog.Value=0; $ctrl.BarProg.Value=0 } }
+    } else { $ctrl.CurT.Text="0:00"; $ctrl.TotT.Text="0:00"; if (-not $script:scrub) { $ctrl.Prog.Value=0; $ctrl.BarProg.Value=0; $ctrl.EdgeProg.Value=0 } }
 
     $props = Await ($s.TryGetMediaPropertiesAsync()) ([Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties])
     if (-not $props) { return }
@@ -585,6 +687,7 @@ function Update-Media {
     $artist = if ($props.Artist) { $props.Artist } else { "" }
     $ctrl.TrackTitle.Text = $title; $ctrl.TrackArtist.Text = $artist
     $ctrl.BarTitle.Text = $title; $ctrl.BarArtist.Text = $artist
+    $ctrl.EdgeTitle.Text = $title; $ctrl.EdgeArtist.Text = $artist
     $app = "$($s.SourceAppUserModelId)"
     $ctrl.AppName.Text = if ($app -match 'chrome|msedge|firefox|opera|brave') { "YOUTUBE MUSIC" } elseif ($app -match 'spotify') { "SPOTIFY" } else { "MUZIK" }
     # baslik kapaktan once degisebilir; degisince birkac poll boyunca kapagi yeniden cek
@@ -595,14 +698,14 @@ function Update-Media {
 
 function Sync-Volume {
   try {
-    if ($ctrl.VolS.IsMouseCaptureWithin -or $ctrl.BarVolS.IsMouseCaptureWithin) { return }
+    if ($ctrl.VolS.IsMouseCaptureWithin -or $ctrl.BarVolS.IsMouseCaptureWithin -or $ctrl.EdgeVolS.IsMouseCaptureWithin) { return }
     $v = [math]::Round([AudioCtl]::GetVolume()*100)
-    $script:volSync = $true; $ctrl.VolS.Value = $v; $ctrl.BarVolS.Value = $v; $script:volSync = $false
+    $script:volSync = $true; $ctrl.VolS.Value = $v; $ctrl.BarVolS.Value = $v; $ctrl.EdgeVolS.Value = $v; $script:volSync = $false
     $muted = [AudioCtl]::GetMute()
     $micon = if ($muted) { [string][char]0xD83D + [string][char]0xDD07 } else { [string][char]0xD83D + [string][char]0xDD0A }
-    $ctrl.MuteBtn.Text = $micon; $ctrl.BarMute.Text = $micon
+    $ctrl.MuteBtn.Text = $micon; $ctrl.BarMute.Text = $micon; $ctrl.EdgeMute.Text = $micon
     $op = if ($muted) { 0.4 } else { 1.0 }
-    $ctrl.VolS.Opacity = $op; $ctrl.BarVolS.Opacity = $op
+    $ctrl.VolS.Opacity = $op; $ctrl.BarVolS.Opacity = $op; $ctrl.EdgeVolS.Opacity = $op
   } catch { }
 }
 
@@ -624,6 +727,28 @@ $ctrl.SwD.Add_MouseLeftButtonUp({ Set-Accent 'SwD'; $args[1].Handled=$true })
 $ctrl.SwE.Add_MouseLeftButtonUp({ Set-Accent 'SwE'; $args[1].Handled=$true })
 $ctrl.ModeCard.Add_MouseLeftButtonUp({ Set-Mode 'card'; $args[1].Handled=$true })
 $ctrl.ModeBar.Add_MouseLeftButtonUp({ Set-Mode 'bar'; $args[1].Handled=$true })
+$ctrl.ModeEdge.Add_MouseLeftButtonUp({ Set-Mode 'edge'; $args[1].Handled=$true })
+
+# kenar cubugu butonlari
+$ctrl.EdgePlayWrap.Add_MouseLeftButtonUp({ $s=Get-Session; if ($s) { $null=$s.TryTogglePlayPauseAsync() }; $args[1].Handled=$true })
+$ctrl.EdgePrev.Add_MouseLeftButtonUp({ $s=Get-Session; if ($s) { $null=$s.TrySkipPreviousAsync() }; $args[1].Handled=$true })
+$ctrl.EdgeNext.Add_MouseLeftButtonUp({ $s=Get-Session; if ($s) { $null=$s.TrySkipNextAsync() }; $args[1].Handled=$true })
+$ctrl.EdgeGear.Add_MouseLeftButtonUp({ Show-Settings; $args[1].Handled=$true })
+$ctrl.EdgeClose.Add_MouseLeftButtonUp({ $win.Close() })
+$ctrl.EdgeVolS.Add_ValueChanged({ if (-not $script:volSync) { try { [AudioCtl]::SetVolume([float]($ctrl.EdgeVolS.Value/100.0)) } catch {} } })
+$ctrl.EdgeMute.Add_MouseLeftButtonUp({ try { [AudioCtl]::SetMute(-not [AudioCtl]::GetMute()); Sync-Volume } catch {}; $args[1].Handled=$true })
+$ctrl.EdgeMute.Add_MouseEnter({ $ctrl.EdgeVolPop.IsOpen = $true; $edgeVolPopTimer.Start() })
+$edgeVolPopTimer = New-Object System.Windows.Threading.DispatcherTimer
+$edgeVolPopTimer.Interval = [TimeSpan]::FromMilliseconds(350)
+$edgeVolPopTimer.Add_Tick({
+  if (-not ($ctrl.EdgeMute.IsMouseOver -or $ctrl.EdgeVolPopBorder.IsMouseOver)) { $ctrl.EdgeVolPop.IsOpen = $false; $edgeVolPopTimer.Stop() }
+})
+$ctrl.EdgeProg.Add_PreviewMouseLeftButtonDown({ $script:scrub=$true })
+$ctrl.EdgeProg.Add_PreviewMouseLeftButtonUp({
+  $val=$ctrl.EdgeProg.Value; $s=Get-Session; if ($s) { try { $null=$s.TryChangePlaybackPositionAsync(([timespan]::FromSeconds($val)).Ticks) } catch {} }
+  $script:scrub=$false
+})
+$ctrl.EdgeProg.Add_LostMouseCapture({ $script:scrub=$false })
 
 # cubuk butonlari
 $ctrl.BarPlayWrap.Add_MouseLeftButtonUp({ $s=Get-Session; if ($s) { $null=$s.TryTogglePlayPauseAsync() }; $args[1].Handled=$true })
@@ -673,8 +798,9 @@ $ctrl.MuteBtn.Add_MouseLeftButtonUp({ try { [AudioCtl]::SetMute(-not [AudioCtl]:
 # ---- surukleme ----
 $script:drag=$false; $script:dragMoved=$false; $script:dpi=1.0
 $btns = @($ctrl.PrevBtn,$ctrl.PlayBtn,$ctrl.PlayWrap,$ctrl.NextBtn,$ctrl.RptBtn,$ctrl.MuteBtn,$ctrl.CloseBtn,$ctrl.MinBtn,$ctrl.GearBtn,
-          $ctrl.SetClose,$ctrl.SetDone,$ctrl.SwA,$ctrl.SwB,$ctrl.SwC,$ctrl.SwD,$ctrl.SwE,$ctrl.ModeCard,$ctrl.ModeBar,
-          $ctrl.BarPrev,$ctrl.BarPlay,$ctrl.BarPlayWrap,$ctrl.BarNext,$ctrl.BarMute,$ctrl.BarGear,$ctrl.BarClose)
+          $ctrl.SetClose,$ctrl.SetDone,$ctrl.SwA,$ctrl.SwB,$ctrl.SwC,$ctrl.SwD,$ctrl.SwE,$ctrl.ModeCard,$ctrl.ModeBar,$ctrl.ModeEdge,
+          $ctrl.BarPrev,$ctrl.BarPlay,$ctrl.BarPlayWrap,$ctrl.BarNext,$ctrl.BarMute,$ctrl.BarGear,$ctrl.BarClose,
+          $ctrl.EdgePrev,$ctrl.EdgePlay,$ctrl.EdgePlayWrap,$ctrl.EdgeNext,$ctrl.EdgeMute,$ctrl.EdgeGear,$ctrl.EdgeClose)
 function Test-Interactive($src) {
   $cur = $src
   for ($i=0; $i -lt 14 -and $cur; $i++) {
@@ -707,8 +833,10 @@ $win.Add_MouseMove({
 $win.Add_MouseLeftButtonUp({
   if (-not $script:drag) { return }
   $script:drag=$false; $win.ReleaseMouseCapture()
-  if ($ctrl.Mini.Visibility -eq 'Visible' -and -not $script:dragMoved) { $ctrl.Mini.Visibility='Collapsed'; $ctrl.Full.Visibility='Visible' }
-  elseif ($script:dragMoved) { Save-Pos }
+  if (-not $script:dragMoved) {
+    if ($ctrl.Mini.Visibility -eq 'Visible') { $ctrl.Mini.Visibility='Collapsed'; $ctrl.Full.Visibility='Visible' }
+    elseif ($script:mode -eq 'edge' -and $ctrl.Edge.Visibility -eq 'Visible') { Toggle-Edge }
+  } else { Save-Pos }
 })
 
 $showTimer = New-Object System.Windows.Threading.DispatcherTimer

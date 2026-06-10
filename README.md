@@ -12,6 +12,10 @@ YouTube Music (ve Windows'ta çalan diğer medya kaynakları) için masaüstünd
   <sub>Kompakt çubuk — ekranın altına yanaşan ince oynatıcı</sub>
 </p>
 <p align="center">
+  <img src="kenar.png" alt="Kenar gorunumu" width="360"><br>
+  <sub>Kenar — ekran kenarındaki orb'a tıklayınca içeri açılan kontrol çubuğu</sub>
+</p>
+<p align="center">
   <img src="settings.png" alt="Ayarlar" width="230"><br>
   <sub>Ayarlar — vurgu rengi, görünüm modu, saydamlık</sub>
 </p>
@@ -24,9 +28,10 @@ YouTube Music (ve Windows'ta çalan diğer medya kaynakları) için masaüstünd
 - ⏱ **İlerleme çubuğu** — tıklayıp/sürükleyip şarkıda atlama (seek)
 - 🔊 **Ses kontrolü** — gerçek sistem sesini okur/yazar (CoreAudio)
 - 🎨 **Vurgu rengi** özelleştirme (5 hazır renk) + **saydamlık** ayarı
-- 🖥️ İki görünüm: **Kart** ve ekranın altına yanaşan **Kompakt çubuk**
-  - Çubukta ses, hoparlör ikonunun üstüne gelince popup olarak açılır
-- 📍 Pencere konumu (kart/çubuk için ayrı) ve tüm ayarlar **kaydedilir** — çoklu monitör destekli
+- 🖥️ Üç görünüm: **Kart**, ekranın altına yanaşan **Kompakt çubuk** ve **Kenar**
+  - Kenar: ekran kenarındaki yuvarlak kapak (orb) — tıklayınca içeri doğru kontrol çubuğu açılır
+  - Çubukta/kenarda ses, hoparlör ikonunun üstüne gelince popup olarak açılır
+- 📍 Pencere konumu (her görünüm için ayrı) ve tüm ayarlar **kaydedilir** — çoklu monitör destekli
 - ⚪ Kart modunda **küçültme**: yuvarlak kapak orb'u
 - Tek instance, sürüklenebilir, ekran dışına çıkmaz
 
@@ -49,7 +54,7 @@ $s.Save()
 
 ## Ayarlar
 
-⚙ düğmesi → vurgu rengi, görünüm modu (Kart / Kompakt çubuk) ve saydamlık. Seçimler `settings.json`'a kaydedilir (bu dosya repoya dahil değildir).
+⚙ düğmesi → vurgu rengi, görünüm modu (Kart / Kompakt çubuk / Kenar) ve saydamlık. Seçimler `settings.json`'a kaydedilir (bu dosya repoya dahil değildir).
 
 ## Lisans
 
