@@ -463,11 +463,7 @@ function Apply-Accent {
 function Show-Settings {
   $ctrl.Full.Visibility='Collapsed'; $ctrl.Bar.Visibility='Collapsed'; $ctrl.Mini.Visibility='Collapsed'
   $ctrl.Settings.Visibility='Visible'; $win.UpdateLayout()
-  $wa = [System.Windows.SystemParameters]::WorkArea
-  if ($win.Left + $win.ActualWidth -gt $wa.Right)  { $win.Left = $wa.Right - $win.ActualWidth - 4 }
-  if ($win.Top + $win.ActualHeight -gt $wa.Bottom) { $win.Top  = $wa.Bottom - $win.ActualHeight - 4 }
-  if ($win.Left -lt $wa.Left) { $win.Left = $wa.Left + 4 }
-  if ($win.Top  -lt $wa.Top)  { $win.Top  = $wa.Top + 4 }
+  Clamp-OnScreen   # mevcut konumda kalsin, sadece tum-ekran disina tasarsa iceri al
 }
 function Hide-Settings { $ctrl.Settings.Visibility='Collapsed'; Set-Mode $script:mode }
 function Set-Mode($m) {
