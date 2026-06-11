@@ -1,61 +1,68 @@
-# youtube-music-widget
+# YTMusicWidget (WPF)
 
-YouTube Music (ve Windows'ta çalan diğer medya kaynakları) için masaüstünde **her zaman üstte** duran, şık bir oynatıcı widget'ı. Kapak fotoğrafı, şarkı bilgisi ve tam kontrol — kurulum gerektirmez (PowerShell + WPF, Windows'ta yerleşik gelir).
+Windows için **her zaman üstte, çerçevesiz** bir müzik widget'i. Çalan medyayı (YouTube Music, Spotify, tarayıcı vb.) **Windows SMTC** üzerinden okur; oynat/duraklat, ileri/geri, konuma atlama (seek) ve **sistem sesini** kontrol eder.
 
-> Bu araç **resmî değildir**, YouTube / Google ile bir ilişkisi yoktur. Windows'un **SMTC** (System Media Transport Controls) arayüzü üzerinden çalışır; tarayıcıdaki YouTube Music sekmesi veya masaüstü uygulamaları (Spotify vb.) ne çalıyorsa onu gösterir/kontrol eder.
+.NET 8 + WPF ile, **MVVM** mimarisi ve ayrık **servis katmanı** kullanılarak yazılmıştır.
 
 <p align="center">
-  <img src="kart.png" alt="Kart gorunumu" width="300">
+  <img src="card.png" alt="Kart gorunumu" width="300"><br>
+  <sub>Kart — bulanık kapak arka planı, başlık/sanatçı, seek ve ses</sub>
 </p>
 <p align="center">
-  <img src="Compant.png" alt="Kompakt cubuk" width="330"><br>
-  <sub>Kompakt çubuk — ekranın altına yanaşan ince oynatıcı</sub>
-</p>
-<p align="center">
-  <img src="kenar.png" alt="Kenar gorunumu" width="360"><br>
-  <sub>Kenar — ekran kenarındaki orb'a tıklayınca içeri açılan kontrol çubuğu</sub>
-</p>
-<p align="center">
-  <img src="settings.png" alt="Ayarlar" width="230"><br>
-  <sub>Ayarlar — vurgu rengi, görünüm modu, saydamlık</sub>
+  <img src="settings.png" alt="Ayarlar" width="280">
+  &nbsp;&nbsp;
+  <img src="orb.png" alt="Orb" width="90"><br>
+  <sub>Ayarlar (vurgu rengi + saydamlık) &nbsp;•&nbsp; Küçültülmüş orb</sub>
 </p>
 
 ## Özellikler
 
-- 🎵 **Kapak fotoğrafı**, şarkı adı ve sanatçı (otomatik güncellenir)
-- ❄️ Kapağın blur'lu hâli **kart arka planına** yansır
-- ⏯ Oynat / duraklat, ⏮ önceki, ⏭ sonraki, 🔁 tekrar
-- ⏱ **İlerleme çubuğu** — tıklayıp/sürükleyip şarkıda atlama (seek)
-- 🔊 **Ses kontrolü** — gerçek sistem sesini okur/yazar (CoreAudio)
-- 🎨 **Vurgu rengi** özelleştirme (5 hazır renk) + **saydamlık** ayarı
-- 🖥️ Üç görünüm: **Kart**, ekranın altına yanaşan **Kompakt çubuk** ve **Kenar**
-  - Kenar: ekran kenarındaki yuvarlak kapak (orb) — tıklayınca içeri doğru kontrol çubuğu açılır
-  - Çubukta/kenarda ses, hoparlör ikonunun üstüne gelince popup olarak açılır
-- 📍 Pencere konumu (her görünüm için ayrı) ve tüm ayarlar **kaydedilir** — çoklu monitör destekli
-- ⚪ Kart modunda **küçültme**: yuvarlak kapak orb'u
-- Tek instance, sürüklenebilir, ekran dışına çıkmaz
+- 🎵 **Canlı medya** — Windows SMTC ile çalan parça, kapak, ilerleme; oynat/duraklat, ileri/geri, seek
+- 🔊 **Sistem sesi** — CoreAudio (IAudioEndpointVolume) ile ses seviyesi + sessize alma
+- 🖼️ **Kart görünümü** — kapaktan üretilen **bulanık arka plan**, accent renkli kontroller
+- ⚪ **Küçültme** — yuvarlak orb; tıklayınca karta döner, sürükleyerek taşınır
+- ⚙️ **Ayarlar** — 5 vurgu rengi, saydamlık
+- 📍 **Kalıcı durum** — pencere konumu, renk ve saydamlık `%APPDATA%\YTMusicWidget\settings.json`'a kaydedilir; çoklu monitör desteği
+- 🪟 Çerçevesiz, saydam, hep üstte, görev çubuğunda görünmez; **tek instance**
 
-## Gereksinimler
+## Mimari
 
-- **Windows** (PowerShell 5.1+ ve .NET/WPF — yerleşik)
-- Bir medya kaynağı (tarayıcıda YouTube Music, Spotify vb.) çalıyor olmalı
+```
+YTMusicWidget/
+├─ Models/
+│  └─ AppSettings.cs            # kalıcı ayar modeli
+├─ Services/
+│  ├─ SettingsService.cs        # System.Text.Json ile %APPDATA% okuma/yazma
+│  ├─ AudioService.cs           # CoreAudio COM (IMMDevice / IAudioEndpointVolume)
+│  └─ MediaService.cs           # SMTC / WinRT (medya bilgisi, kontroller, kapak)
+├─ ViewModels/
+│  ├─ ObservableObject.cs       # INotifyPropertyChanged tabanı
+│  ├─ RelayCommand.cs           # ICommand
+│  ├─ ColorUtil.cs              # hex → WPF Brush
+│  └─ PlayerViewModel.cs        # poll döngüsü, komutlar, accent, ses, konum
+├─ Views/
+│  └─ MainWindow.xaml(.cs)      # Kart / Ayarlar / Orb görünümleri + sürükleme
+├─ App.xaml(.cs)                # composition root + tek instance
+└─ app.manifest                 # PerMonitorV2 DPI
+```
+
+**Öne çıkan teknik noktalar**
+- WPF'de elle bildirilmiş **COM arabirimleriyle** (`[ComImport]`) CoreAudio erişimi
+- **WinRT** projeksiyonları (`net8.0-windows10.0.19041.0`) ile SMTC
+- Dış bağımlılık yok; MVVM altyapısı (ObservableObject/RelayCommand) elle yazıldı
+- Servis → ViewModel → View ayrımı, `DispatcherTimer` ile 1 sn'lik yoklama
 
 ## Çalıştırma
 
-`start.vbs` dosyasına **çift tıkla** — konsol açmadan sessizce başlar.
+Gerekli: **.NET 8 SDK** (Windows).
 
-### Windows açılışında otomatik başlatma
-
-```powershell
-$s = (New-Object -ComObject WScript.Shell).CreateShortcut("$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup\YouTubeMusicWidget.lnk")
-$s.TargetPath = "$env:USERPROFILE\youtube-music-widget\start.vbs"
-$s.Save()
+```bash
+dotnet run                 # gelistirme
+dotnet build -c Release    # derleme
 ```
 
-## Ayarlar
-
-⚙ düğmesi → vurgu rengi, görünüm modu (Kart / Kompakt çubuk / Kenar) ve saydamlık. Seçimler `settings.json`'a kaydedilir (bu dosya repoya dahil değildir).
+> Bu proje, aynı widget'ın PowerShell prototipinin C# / WPF'e taşınmış sürümüdür.
 
 ## Lisans
 
-[MIT](LICENSE)
+[MIT](LICENSE) © Emre Yılmaz

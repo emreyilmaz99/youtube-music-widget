@@ -1,4 +1,9 @@
-# kullaniciya ozel calisma dosyalari
-settings.json
-dbg.log
+# .NET build ciktilari
+bin/
+obj/
+.vs/
+*.user
+
+# gecici ekran goruntuleri / loglar
+_*.png
 *.log
