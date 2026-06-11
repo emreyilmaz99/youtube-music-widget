@@ -6,23 +6,32 @@ Windows için **her zaman üstte, çerçevesiz** bir müzik widget'i. Çalan med
 
 <p align="center">
   <img src="card.png" alt="Kart gorunumu" width="300"><br>
-  <sub>Kart — bulanık kapak arka planı, başlık/sanatçı, seek ve ses</sub>
+  <sub><b>Kart</b> — bulanık kapak arka planı, başlık/sanatçı, seek ve ses</sub>
 </p>
 <p align="center">
-  <img src="settings.png" alt="Ayarlar" width="280">
+  <img src="bar.png" alt="Kompakt cubuk" width="380"><br>
+  <sub><b>Kompakt çubuk</b> — ekranın altına yanaşan ince oynatıcı</sub>
+</p>
+<p align="center">
+  <img src="edge.png" alt="Kenar gorunumu" width="380"><br>
+  <sub><b>Kenar</b> — ekran kenarındaki orb'a tıklayınca içeri açılan kontrol çubuğu</sub>
+</p>
+<p align="center">
+  <img src="settings.png" alt="Ayarlar" width="250">
   &nbsp;&nbsp;
   <img src="orb.png" alt="Orb" width="90"><br>
-  <sub>Ayarlar (vurgu rengi + saydamlık) &nbsp;•&nbsp; Küçültülmüş orb</sub>
+  <sub>Ayarlar (vurgu rengi + görünüm + saydamlık) &nbsp;•&nbsp; Küçültülmüş orb</sub>
 </p>
 
 ## Özellikler
 
 - 🎵 **Canlı medya** — Windows SMTC ile çalan parça, kapak, ilerleme; oynat/duraklat, ileri/geri, seek
 - 🔊 **Sistem sesi** — CoreAudio (IAudioEndpointVolume) ile ses seviyesi + sessize alma
-- 🖼️ **Kart görünümü** — kapaktan üretilen **bulanık arka plan**, accent renkli kontroller
-- ⚪ **Küçültme** — yuvarlak orb; tıklayınca karta döner, sürükleyerek taşınır
-- ⚙️ **Ayarlar** — 5 vurgu rengi, saydamlık
-- 📍 **Kalıcı durum** — pencere konumu, renk ve saydamlık `%APPDATA%\YTMusicWidget\settings.json`'a kaydedilir; çoklu monitör desteği
+- 🖥️ **Üç görünüm** — **Kart**, ekran altına yanaşan **Kompakt çubuk** ve kenardaki orb'dan açılan **Kenar**
+- 🖼️ Kapaktan üretilen **bulanık arka plan**, accent renkli kontroller
+- ⚪ **Küçültme** — yuvarlak orb; tıklayınca açılır, sürükleyerek taşınır
+- ⚙️ **Ayarlar** — 5 vurgu rengi, görünüm modu, saydamlık
+- 📍 **Kalıcı durum** — her görünümün konumu + renk/saydamlık/mod `%APPDATA%\YTMusicWidget\settings.json`'a kaydedilir; çoklu monitör desteği
 - 🪟 Çerçevesiz, saydam, hep üstte, görev çubuğunda görünmez; **tek instance**
 
 ## Mimari
@@ -41,7 +50,7 @@ YTMusicWidget/
 │  ├─ ColorUtil.cs              # hex → WPF Brush
 │  └─ PlayerViewModel.cs        # poll döngüsü, komutlar, accent, ses, konum
 ├─ Views/
-│  └─ MainWindow.xaml(.cs)      # Kart / Ayarlar / Orb görünümleri + sürükleme
+│  └─ MainWindow.xaml(.cs)      # Kart / Çubuk / Kenar / Ayarlar / Orb + sürükleme
 ├─ App.xaml(.cs)                # composition root + tek instance
 └─ app.manifest                 # PerMonitorV2 DPI
 ```

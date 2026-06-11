@@ -8,11 +8,13 @@ namespace YTMusicWidget.Views;
 
 public partial class MainWindow : Window
 {
-    private enum ViewState { Card, Bar, Settings, Mini }
+    private enum ViewState { Card, Bar, Edge, Settings, Mini }
 
     private readonly PlayerViewModel _vm;
     private ViewState _view = ViewState.Card;
     private string _mode;
+    private bool _edgeOpen;
+    private string _edgeSide = "right";
 
     public MainWindow(PlayerViewModel vm)
     {
@@ -30,6 +32,10 @@ public partial class MainWindow : Window
         Loaded += async (_, _) =>
         {
             await _vm.StartAsync();
+            // pencere gosterildikten sonra icerige tam otur (SizeToContent ilk olcumde daralmayabilir)
+            SizeToContent = SizeToContent.Manual;
+            SizeToContent = SizeToContent.WidthAndHeight;
+            UpdateLayout();
             PositionForMode(_mode);
         };
     }
@@ -40,14 +46,49 @@ public partial class MainWindow : Window
         _view = v;
         Card.Visibility = v == ViewState.Card ? Visibility.Visible : Visibility.Collapsed;
         Bar.Visibility = v == ViewState.Bar ? Visibility.Visible : Visibility.Collapsed;
+        Edge.Visibility = v == ViewState.Edge ? Visibility.Visible : Visibility.Collapsed;
         SettingsPanel.Visibility = v == ViewState.Settings ? Visibility.Visible : Visibility.Collapsed;
         MiniOrb.Visibility = v == ViewState.Mini ? Visibility.Visible : Visibility.Collapsed;
         UpdateLayout();
+        // SizeToContent icerik kuculurken her zaman daralmaz; zorla yeniden boyutlandir
+        SizeToContent = SizeToContent.Manual;
+        SizeToContent = SizeToContent.WidthAndHeight;
         ClampOnScreen();
     }
 
-    /// <summary>Secili moda gore ana gorunumu (kart/cubuk) goster.</summary>
-    private void ShowMain() => SetView(_mode == "bar" ? ViewState.Bar : ViewState.Card);
+    /// <summary>Secili moda gore ana gorunumu (kart/cubuk/kenar) goster.</summary>
+    private void ShowMain()
+    {
+        if (_mode == "bar") SetView(ViewState.Bar);
+        else if (_mode == "edge")
+        {
+            _edgeOpen = false;
+            EdgeStrip.Visibility = Visibility.Collapsed;
+            SetView(ViewState.Edge);
+            SetEdgeSide();
+        }
+        else SetView(ViewState.Card);
+    }
+
+    // ---- kenar: orb ekranin hangi yarisinda -> cubuk ice dogru acilsin ----
+    private void SetEdgeSide()
+    {
+        double cx = Left + ActualWidth / 2;
+        double sc = SystemParameters.VirtualScreenLeft + SystemParameters.VirtualScreenWidth / 2;
+        if (cx > sc) { _edgeSide = "right"; Grid.SetColumn(EdgeOrb, 1); Grid.SetColumn(EdgeStrip, 0); }
+        else { _edgeSide = "left"; Grid.SetColumn(EdgeOrb, 0); Grid.SetColumn(EdgeStrip, 1); }
+    }
+
+    private void ToggleEdge()
+    {
+        _edgeOpen = !_edgeOpen;
+        double oldW = ActualWidth;
+        EdgeStrip.Visibility = _edgeOpen ? Visibility.Visible : Visibility.Collapsed;
+        UpdateLayout();
+        double newW = ActualWidth;
+        if (_edgeSide == "right") Left += oldW - newW;   // sag kenarda sabit kal
+        ClampOnScreen();
+    }
 
     private void ApplyMode(string mode)
     {
@@ -67,6 +108,7 @@ public partial class MainWindow : Window
             UpdateLayout();
             var wa = SystemParameters.WorkArea;
             if (mode == "bar") { Left = wa.Left + (wa.Width - ActualWidth) / 2; Top = wa.Bottom - ActualHeight - 4; }
+            else if (mode == "edge") { Left = wa.Right - ActualWidth - 2; Top = wa.Top + (wa.Height - ActualHeight) / 2; }
             else { Left = 40; Top = 180; }
         }
         ClampOnScreen();
@@ -76,6 +118,7 @@ public partial class MainWindow : Window
     {
         ModeCardBtn.BorderThickness = new Thickness(_mode == "card" ? 2 : 0);
         ModeBarBtn.BorderThickness = new Thickness(_mode == "bar" ? 2 : 0);
+        ModeEdgeBtn.BorderThickness = new Thickness(_mode == "edge" ? 2 : 0);
     }
 
     private void Gear_Click(object sender, RoutedEventArgs e) => SetView(ViewState.Settings);
@@ -130,8 +173,13 @@ public partial class MainWindow : Window
         GetCursorPos(out POINT p1);
 
         bool moved = Math.Abs(p1.X - p0.X) > 3 || Math.Abs(p1.Y - p0.Y) > 3;
-        if (moved) _vm.SavePosition(Left, Top);
-        else if (_view == ViewState.Mini) ShowMain();   // orb'a tiklayinca geri ac
+        if (moved)
+        {
+            _vm.SavePosition(Left, Top);
+            if (_view == ViewState.Edge) SetEdgeSide();   // tasininca acilis yonunu guncelle
+        }
+        else if (_view == ViewState.Mini) ShowMain();     // orb'a tiklayinca karti ac
+        else if (_view == ViewState.Edge) ToggleEdge();   // kenar orb'una tiklayinca cubugu ac/kapat
     }
 
     private void ClampOnScreen()

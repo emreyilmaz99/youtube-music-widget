@@ -160,11 +160,14 @@
 
         <TextBlock Text="GORUNUM" Foreground="#FF8A8A94" FontSize="9" FontWeight="Bold" Margin="0,16,0,8"/>
         <StackPanel Orientation="Horizontal">
-          <Border x:Name="ModeCardBtn" CornerRadius="8" Height="30" Width="108" Background="#FF2A2A36" BorderBrush="White" BorderThickness="0" Cursor="Hand" Margin="0,0,9,0" Tag="card" PreviewMouseLeftButtonDown="Mode_Down">
+          <Border x:Name="ModeCardBtn" CornerRadius="8" Height="30" Width="66" Background="#FF2A2A36" BorderBrush="White" BorderThickness="0" Cursor="Hand" Margin="0,0,6,0" Tag="card" PreviewMouseLeftButtonDown="Mode_Down">
             <TextBlock Text="Kart" Foreground="#FFE8E8EC" FontSize="11" HorizontalAlignment="Center" VerticalAlignment="Center"/>
           </Border>
-          <Border x:Name="ModeBarBtn" CornerRadius="8" Height="30" Width="108" Background="#FF2A2A36" BorderBrush="White" BorderThickness="0" Cursor="Hand" Tag="bar" PreviewMouseLeftButtonDown="Mode_Down">
-            <TextBlock Text="Kompakt cubuk" Foreground="#FFE8E8EC" FontSize="11" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+          <Border x:Name="ModeBarBtn" CornerRadius="8" Height="30" Width="66" Background="#FF2A2A36" BorderBrush="White" BorderThickness="0" Cursor="Hand" Margin="0,0,6,0" Tag="bar" PreviewMouseLeftButtonDown="Mode_Down">
+            <TextBlock Text="Cubuk" Foreground="#FFE8E8EC" FontSize="11" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+          </Border>
+          <Border x:Name="ModeEdgeBtn" CornerRadius="8" Height="30" Width="66" Background="#FF2A2A36" BorderBrush="White" BorderThickness="0" Cursor="Hand" Tag="edge" PreviewMouseLeftButtonDown="Mode_Down">
+            <TextBlock Text="Kenar" Foreground="#FFE8E8EC" FontSize="11" HorizontalAlignment="Center" VerticalAlignment="Center"/>
           </Border>
         </StackPanel>
 
@@ -193,6 +196,52 @@
       <Grid>
         <TextBlock Text="&#x266B;" Foreground="#FF77777F" FontSize="20" FontFamily="Segoe UI Symbol" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         <Border CornerRadius="30"><Border.Background><ImageBrush ImageSource="{Binding Cover}" Stretch="UniformToFill"/></Border.Background></Border>
+      </Grid>
+    </Border>
+
+    <!-- ===================== KENAR (orb + acilir cubuk) ===================== -->
+    <Border x:Name="Edge" Margin="9" CornerRadius="31" Background="#FF15151C" BorderThickness="1" Visibility="Collapsed">
+      <Border.BorderBrush>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#66FF5C5C" Offset="0"/><GradientStop Color="#22FFFFFF" Offset="1"/></LinearGradientBrush>
+      </Border.BorderBrush>
+      <Border.Effect><DropShadowEffect Color="#000000" BlurRadius="18" ShadowDepth="0" Opacity="0.55"/></Border.Effect>
+      <Grid x:Name="EdgeGrid">
+        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+
+        <Border x:Name="EdgeOrb" Grid.Column="1" Width="58" Height="58" CornerRadius="29" Margin="3" Background="#FF2C2C36">
+          <Grid>
+            <TextBlock Text="&#x266B;" Foreground="#FF77777F" FontSize="22" FontFamily="Segoe UI Symbol" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Border CornerRadius="29"><Border.Background><ImageBrush ImageSource="{Binding Cover}" Stretch="UniformToFill"/></Border.Background></Border>
+          </Grid>
+        </Border>
+
+        <StackPanel x:Name="EdgeStrip" Grid.Column="0" Orientation="Vertical" VerticalAlignment="Center" Visibility="Collapsed" Margin="14,0,8,0">
+          <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+            <StackPanel Width="96" VerticalAlignment="Center" Margin="0,0,12,0">
+              <TextBlock Text="{Binding Title}" Foreground="#FFF6F6FA" FontSize="12" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+              <TextBlock Text="{Binding Artist}" Foreground="#FFA8A8B2" FontSize="10" TextTrimming="CharacterEllipsis" Margin="0,1,0,0"/>
+            </StackPanel>
+            <Button Content="&#x23EE;" Style="{StaticResource IconButton}" FontSize="15" Command="{Binding PrevCommand}" Margin="0,0,11,0" ToolTip="Onceki"/>
+            <Button Width="34" Height="34" Cursor="Hand" Command="{Binding PlayPauseCommand}" Focusable="False" VerticalAlignment="Center" ToolTip="Oynat / Duraklat">
+              <Button.Template>
+                <ControlTemplate TargetType="Button">
+                  <Border CornerRadius="17" Background="{Binding PlayGradient}">
+                    <Border.Effect><DropShadowEffect Color="#FF5C5C" BlurRadius="10" ShadowDepth="0" Opacity="0.5"/></Border.Effect>
+                    <TextBlock Text="{Binding PlayGlyph}" Foreground="White" FontSize="13" FontFamily="Segoe UI Symbol" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                  </Border>
+                </ControlTemplate>
+              </Button.Template>
+            </Button>
+            <Button Content="&#x23ED;" Style="{StaticResource IconButton}" FontSize="15" Command="{Binding NextCommand}" Margin="11,0,12,0" ToolTip="Sonraki"/>
+            <Button Content="{Binding MuteGlyph}" Style="{StaticResource IconButton}" FontSize="11" Foreground="#FFB8B8C2" Command="{Binding MuteCommand}" Margin="0,0,6,0" ToolTip="Sessiz"/>
+            <Slider Width="44" Style="{StaticResource Slim}" Foreground="White" Minimum="0" Maximum="100" Value="{Binding Volume, Mode=TwoWay}" VerticalAlignment="Center" Margin="0,0,12,0"/>
+            <Button Content="&#x2699;" Style="{StaticResource IconButton}" FontSize="12" Foreground="#FF9A9AA6" Click="Gear_Click" Margin="0,0,8,0" ToolTip="Ayarlar"/>
+            <Button Content="&#x2715;" Style="{StaticResource IconButton}" FontFamily="Segoe UI" FontSize="11" Foreground="#FF9A9AA6" Click="Close_Click" ToolTip="Kapat"/>
+          </StackPanel>
+          <Slider x:Name="EdgeSeek" Style="{StaticResource Slim}" Foreground="{Binding AccentBrush}" Minimum="0"
+                  Maximum="{Binding DurationSeconds}" Value="{Binding PositionSeconds, Mode=OneWay}" Margin="0,4,0,0"
+                  PreviewMouseLeftButtonDown="Seek_Down" PreviewMouseLeftButtonUp="Seek_Up" LostMouseCapture="Seek_Lost"/>
+        </StackPanel>
       </Grid>
     </Border>
 
