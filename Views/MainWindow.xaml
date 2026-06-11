@@ -11,125 +11,132 @@
 
     <!-- ===================== KART ===================== -->
     <Border x:Name="Card" Width="246" Margin="10" CornerRadius="13" Background="#FF14141B">
-      <Border.Effect>
-        <DropShadowEffect Color="#000000" BlurRadius="20" ShadowDepth="0" Opacity="0.55"/>
-      </Border.Effect>
-
+      <Border.Effect><DropShadowEffect Color="#000000" BlurRadius="20" ShadowDepth="0" Opacity="0.55"/></Border.Effect>
       <Grid>
-        <!-- buzlu arka plan (kapaktan) - belirgin -->
         <Border CornerRadius="13" Opacity="0.9">
-          <Border.Background>
-            <ImageBrush ImageSource="{Binding Cover}" Stretch="UniformToFill"/>
-          </Border.Background>
+          <Border.Background><ImageBrush ImageSource="{Binding Cover}" Stretch="UniformToFill"/></Border.Background>
           <Border.Effect><BlurEffect Radius="28"/></Border.Effect>
         </Border>
         <Border CornerRadius="13" Background="#4010101A"/>
 
         <StackPanel Margin="13,9,13,11">
-
-          <!-- ust satir -->
           <Grid>
-            <TextBlock Text="{Binding AppName}" Foreground="{Binding AccentBrush}" FontSize="9.5"
-                       FontWeight="Bold" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding AppName}" Foreground="{Binding AccentBrush}" FontSize="9.5" FontWeight="Bold" VerticalAlignment="Center"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-              <Button Content="&#x2699;" Style="{StaticResource IconButton}" FontSize="13" Foreground="#FF9A9AA6"
-                      Click="Gear_Click" Margin="0,0,9,0" ToolTip="Ayarlar"/>
-              <Button Content="&#x2013;" Style="{StaticResource IconButton}" FontFamily="Segoe UI" FontSize="15" Foreground="#FF9A9AA6"
-                      Click="Min_Click" Margin="0,0,9,0" ToolTip="Kucult"/>
-              <Button Content="&#x2715;" Style="{StaticResource IconButton}" FontFamily="Segoe UI" FontSize="12" Foreground="#FF9A9AA6"
-                      Click="Close_Click" ToolTip="Kapat"/>
+              <Button Content="&#x2699;" Style="{StaticResource IconButton}" FontSize="13" Foreground="#FF9A9AA6" Click="Gear_Click" Margin="0,0,9,0" ToolTip="Ayarlar"/>
+              <Button Content="&#x2013;" Style="{StaticResource IconButton}" FontFamily="Segoe UI" FontSize="15" Foreground="#FF9A9AA6" Click="Min_Click" Margin="0,0,9,0" ToolTip="Kucult"/>
+              <Button Content="&#x2715;" Style="{StaticResource IconButton}" FontFamily="Segoe UI" FontSize="12" Foreground="#FF9A9AA6" Click="Close_Click" ToolTip="Kapat"/>
             </StackPanel>
           </Grid>
 
-          <!-- kapak + baslik -->
           <Grid Margin="0,10,0,0">
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="Auto"/>
-              <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+            <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
             <Border Grid.Column="0" Width="46" Height="46" CornerRadius="8">
               <Border.Background><SolidColorBrush Color="#FF20202A"/></Border.Background>
               <Grid>
-                <TextBlock Text="&#x266B;" Foreground="#FF55555E" FontSize="18" FontFamily="Segoe UI Symbol"
-                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                <Border CornerRadius="8">
-                  <Border.Background><ImageBrush ImageSource="{Binding Cover}" Stretch="UniformToFill"/></Border.Background>
-                </Border>
+                <TextBlock Text="&#x266B;" Foreground="#FF55555E" FontSize="18" FontFamily="Segoe UI Symbol" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <Border CornerRadius="8"><Border.Background><ImageBrush ImageSource="{Binding Cover}" Stretch="UniformToFill"/></Border.Background></Border>
               </Grid>
             </Border>
             <StackPanel Grid.Column="1" Margin="11,0,0,0" VerticalAlignment="Center">
-              <TextBlock Text="{Binding Title}" Foreground="#FFF6F6FA" FontSize="12.5" FontWeight="SemiBold"
-                         TextTrimming="CharacterEllipsis"/>
-              <TextBlock Text="{Binding Artist}" Foreground="#FFA8A8B2" FontSize="10.5"
-                         TextTrimming="CharacterEllipsis" Margin="0,2,0,0"/>
+              <TextBlock Text="{Binding Title}" Foreground="#FFF6F6FA" FontSize="12.5" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+              <TextBlock Text="{Binding Artist}" Foreground="#FFA8A8B2" FontSize="10.5" TextTrimming="CharacterEllipsis" Margin="0,2,0,0"/>
             </StackPanel>
           </Grid>
 
-          <!-- ilerleme -->
           <Grid Margin="0,10,0,0">
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="Auto"/>
-              <ColumnDefinition Width="*"/>
-              <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="{Binding PositionText}" Foreground="#FF8A8A94" FontSize="9.5"
-                       VerticalAlignment="Center" Margin="0,0,8,0"/>
-            <Slider x:Name="SeekSlider" Grid.Column="1" Style="{StaticResource Slim}"
-                    Foreground="{Binding AccentBrush}" Minimum="0"
+            <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="{Binding PositionText}" Foreground="#FF8A8A94" FontSize="9.5" VerticalAlignment="Center" Margin="0,0,8,0"/>
+            <Slider x:Name="SeekSlider" Grid.Column="1" Style="{StaticResource Slim}" Foreground="{Binding AccentBrush}" Minimum="0"
                     Maximum="{Binding DurationSeconds}" Value="{Binding PositionSeconds, Mode=OneWay}"
-                    PreviewMouseLeftButtonDown="Seek_Down" PreviewMouseLeftButtonUp="Seek_Up"
-                    LostMouseCapture="Seek_Lost"/>
-            <TextBlock Grid.Column="2" Text="{Binding DurationText}" Foreground="#FF8A8A94" FontSize="9.5"
-                       VerticalAlignment="Center" Margin="8,0,0,0"/>
+                    PreviewMouseLeftButtonDown="Seek_Down" PreviewMouseLeftButtonUp="Seek_Up" LostMouseCapture="Seek_Lost"/>
+            <TextBlock Grid.Column="2" Text="{Binding DurationText}" Foreground="#FF8A8A94" FontSize="9.5" VerticalAlignment="Center" Margin="8,0,0,0"/>
           </Grid>
 
-          <!-- kontroller -->
           <Grid Margin="0,10,0,0">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-              <Button Content="&#x23EE;" Style="{StaticResource IconButton}" FontSize="15"
-                      Command="{Binding PrevCommand}" Margin="0,0,11,0" ToolTip="Onceki"/>
-              <Button Width="38" Height="38" Cursor="Hand" Command="{Binding PlayPauseCommand}"
-                      Focusable="False" ToolTip="Oynat / Duraklat">
+              <Button Content="&#x23EE;" Style="{StaticResource IconButton}" FontSize="15" Command="{Binding PrevCommand}" Margin="0,0,11,0" ToolTip="Onceki"/>
+              <Button Width="38" Height="38" Cursor="Hand" Command="{Binding PlayPauseCommand}" Focusable="False" ToolTip="Oynat / Duraklat">
                 <Button.Template>
                   <ControlTemplate TargetType="Button">
                     <Border x:Name="pb" CornerRadius="19" Background="{Binding PlayGradient}" RenderTransformOrigin="0.5,0.5">
                       <Border.Effect><DropShadowEffect Color="#FF5C5C" BlurRadius="11" ShadowDepth="0" Opacity="0.55"/></Border.Effect>
                       <Border.RenderTransform><ScaleTransform ScaleX="1" ScaleY="1"/></Border.RenderTransform>
-                      <TextBlock Text="{Binding PlayGlyph}" Foreground="White" FontSize="14"
-                                 FontFamily="Segoe UI Symbol" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                      <TextBlock Text="{Binding PlayGlyph}" Foreground="White" FontSize="14" FontFamily="Segoe UI Symbol" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                     <ControlTemplate.Triggers>
                       <Trigger Property="IsMouseOver" Value="True">
-                        <Trigger.EnterActions>
-                          <BeginStoryboard><Storyboard>
-                            <DoubleAnimation Storyboard.TargetName="pb" Storyboard.TargetProperty="RenderTransform.ScaleX" To="1.1" Duration="0:0:0.11"/>
-                            <DoubleAnimation Storyboard.TargetName="pb" Storyboard.TargetProperty="RenderTransform.ScaleY" To="1.1" Duration="0:0:0.11"/>
-                          </Storyboard></BeginStoryboard>
-                        </Trigger.EnterActions>
-                        <Trigger.ExitActions>
-                          <BeginStoryboard><Storyboard>
-                            <DoubleAnimation Storyboard.TargetName="pb" Storyboard.TargetProperty="RenderTransform.ScaleX" To="1.0" Duration="0:0:0.15"/>
-                            <DoubleAnimation Storyboard.TargetName="pb" Storyboard.TargetProperty="RenderTransform.ScaleY" To="1.0" Duration="0:0:0.15"/>
-                          </Storyboard></BeginStoryboard>
-                        </Trigger.ExitActions>
+                        <Trigger.EnterActions><BeginStoryboard><Storyboard>
+                          <DoubleAnimation Storyboard.TargetName="pb" Storyboard.TargetProperty="RenderTransform.ScaleX" To="1.1" Duration="0:0:0.11"/>
+                          <DoubleAnimation Storyboard.TargetName="pb" Storyboard.TargetProperty="RenderTransform.ScaleY" To="1.1" Duration="0:0:0.11"/>
+                        </Storyboard></BeginStoryboard></Trigger.EnterActions>
+                        <Trigger.ExitActions><BeginStoryboard><Storyboard>
+                          <DoubleAnimation Storyboard.TargetName="pb" Storyboard.TargetProperty="RenderTransform.ScaleX" To="1.0" Duration="0:0:0.15"/>
+                          <DoubleAnimation Storyboard.TargetName="pb" Storyboard.TargetProperty="RenderTransform.ScaleY" To="1.0" Duration="0:0:0.15"/>
+                        </Storyboard></BeginStoryboard></Trigger.ExitActions>
                       </Trigger>
                     </ControlTemplate.Triggers>
                   </ControlTemplate>
                 </Button.Template>
               </Button>
-              <Button Content="&#x23ED;" Style="{StaticResource IconButton}" FontSize="15"
-                      Command="{Binding NextCommand}" Margin="11,0,0,0" ToolTip="Sonraki"/>
+              <Button Content="&#x23ED;" Style="{StaticResource IconButton}" FontSize="15" Command="{Binding NextCommand}" Margin="11,0,0,0" ToolTip="Sonraki"/>
             </StackPanel>
-
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-              <Button Content="{Binding MuteGlyph}" Style="{StaticResource IconButton}" FontSize="11.5"
-                      Foreground="#FFB8B8C2" Command="{Binding MuteCommand}" Margin="0,0,6,0" ToolTip="Sessiz"/>
-              <Slider x:Name="VolumeSlider" Width="54" Style="{StaticResource Slim}" Foreground="White"
-                      Minimum="0" Maximum="100" Value="{Binding Volume, Mode=TwoWay}" VerticalAlignment="Center"/>
+              <Button Content="{Binding MuteGlyph}" Style="{StaticResource IconButton}" FontSize="11.5" Foreground="#FFB8B8C2" Command="{Binding MuteCommand}" Margin="0,0,6,0" ToolTip="Sessiz"/>
+              <Slider x:Name="VolumeSlider" Width="54" Style="{StaticResource Slim}" Foreground="White" Minimum="0" Maximum="100" Value="{Binding Volume, Mode=TwoWay}" VerticalAlignment="Center"/>
             </StackPanel>
           </Grid>
-
         </StackPanel>
+      </Grid>
+    </Border>
+
+    <!-- ===================== KOMPAKT CUBUK ===================== -->
+    <Border x:Name="Bar" Margin="10" CornerRadius="12" Background="#FF14141B" Visibility="Collapsed">
+      <Border.Effect><DropShadowEffect Color="#000000" BlurRadius="18" ShadowDepth="0" Opacity="0.55"/></Border.Effect>
+      <Grid>
+        <Border CornerRadius="12" Opacity="0.85">
+          <Border.Background><ImageBrush ImageSource="{Binding Cover}" Stretch="UniformToFill"/></Border.Background>
+          <Border.Effect><BlurEffect Radius="30"/></Border.Effect>
+        </Border>
+        <Border CornerRadius="12" Background="#4810101A"/>
+
+        <Grid Margin="9,6,11,5">
+          <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+
+          <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center">
+            <Border Width="38" Height="38" CornerRadius="7" VerticalAlignment="Center">
+              <Border.Background><SolidColorBrush Color="#FF20202A"/></Border.Background>
+              <Grid>
+                <TextBlock Text="&#x266B;" Foreground="#FF55555E" FontSize="15" FontFamily="Segoe UI Symbol" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <Border CornerRadius="7"><Border.Background><ImageBrush ImageSource="{Binding Cover}" Stretch="UniformToFill"/></Border.Background></Border>
+              </Grid>
+            </Border>
+            <StackPanel Width="118" VerticalAlignment="Center" Margin="9,0,8,0">
+              <TextBlock Text="{Binding Title}" Foreground="#FFF6F6FA" FontSize="11.5" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+              <TextBlock Text="{Binding Artist}" Foreground="#FFA8A8B2" FontSize="10" TextTrimming="CharacterEllipsis" Margin="0,1,0,0"/>
+            </StackPanel>
+            <Button Content="&#x23EE;" Style="{StaticResource IconButton}" FontSize="14" Command="{Binding PrevCommand}" Margin="0,0,9,0" ToolTip="Onceki"/>
+            <Button Width="32" Height="32" Cursor="Hand" Command="{Binding PlayPauseCommand}" Focusable="False" VerticalAlignment="Center" ToolTip="Oynat / Duraklat">
+              <Button.Template>
+                <ControlTemplate TargetType="Button">
+                  <Border CornerRadius="16" Background="{Binding PlayGradient}">
+                    <Border.Effect><DropShadowEffect Color="#FF5C5C" BlurRadius="9" ShadowDepth="0" Opacity="0.5"/></Border.Effect>
+                    <TextBlock Text="{Binding PlayGlyph}" Foreground="White" FontSize="12" FontFamily="Segoe UI Symbol" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                  </Border>
+                </ControlTemplate>
+              </Button.Template>
+            </Button>
+            <Button Content="&#x23ED;" Style="{StaticResource IconButton}" FontSize="14" Command="{Binding NextCommand}" Margin="9,0,9,0" ToolTip="Sonraki"/>
+            <Button Content="{Binding MuteGlyph}" Style="{StaticResource IconButton}" FontSize="11" Foreground="#FFB8B8C2" Command="{Binding MuteCommand}" Margin="0,0,6,0" ToolTip="Sessiz"/>
+            <Slider Width="46" Style="{StaticResource Slim}" Foreground="White" Minimum="0" Maximum="100" Value="{Binding Volume, Mode=TwoWay}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+            <Button Content="&#x2699;" Style="{StaticResource IconButton}" FontSize="12" Foreground="#FF9A9AA6" Click="Gear_Click" Margin="0,0,8,0" ToolTip="Ayarlar"/>
+            <Button Content="&#x2715;" Style="{StaticResource IconButton}" FontFamily="Segoe UI" FontSize="11" Foreground="#FF9A9AA6" Click="Close_Click" ToolTip="Kapat"/>
+          </StackPanel>
+
+          <Slider Grid.Row="1" x:Name="BarSeek" Style="{StaticResource Slim}" Foreground="{Binding AccentBrush}" Minimum="0"
+                  Maximum="{Binding DurationSeconds}" Value="{Binding PositionSeconds, Mode=OneWay}" Margin="2,3,2,0"
+                  PreviewMouseLeftButtonDown="Seek_Down" PreviewMouseLeftButtonUp="Seek_Up" LostMouseCapture="Seek_Lost"/>
+        </Grid>
       </Grid>
     </Border>
 
@@ -139,34 +146,36 @@
       <StackPanel Margin="16,13,16,15">
         <Grid>
           <TextBlock Text="AYARLAR" Foreground="#FFF6F6FA" FontSize="11" FontWeight="Bold" VerticalAlignment="Center"/>
-          <Button Content="&#x2715;" Style="{StaticResource IconButton}" FontFamily="Segoe UI" FontSize="12"
-                  Foreground="#FF9A9AA6" HorizontalAlignment="Right" Click="SettingsClose_Click" ToolTip="Geri"/>
+          <Button Content="&#x2715;" Style="{StaticResource IconButton}" FontFamily="Segoe UI" FontSize="12" Foreground="#FF9A9AA6" HorizontalAlignment="Right" Click="SettingsClose_Click" ToolTip="Geri"/>
         </Grid>
 
         <TextBlock Text="VURGU RENGI" Foreground="#FF8A8A94" FontSize="9" FontWeight="Bold" Margin="0,16,0,8"/>
         <StackPanel Orientation="Horizontal">
-          <Border Width="28" Height="28" CornerRadius="14" Background="#FFFF5C5C" Cursor="Hand" Margin="0,0,10,0"
-                  Tag="FF5C5C|FF8A5C" PreviewMouseLeftButtonDown="Swatch_Down"/>
-          <Border Width="28" Height="28" CornerRadius="14" Background="#FF4C8DFF" Cursor="Hand" Margin="0,0,10,0"
-                  Tag="4C8DFF|7BB0FF" PreviewMouseLeftButtonDown="Swatch_Down"/>
-          <Border Width="28" Height="28" CornerRadius="14" Background="#FFB57BFF" Cursor="Hand" Margin="0,0,10,0"
-                  Tag="B57BFF|D6A8FF" PreviewMouseLeftButtonDown="Swatch_Down"/>
-          <Border Width="28" Height="28" CornerRadius="14" Background="#FF2FD9A0" Cursor="Hand" Margin="0,0,10,0"
-                  Tag="2FD9A0|5CE6BC" PreviewMouseLeftButtonDown="Swatch_Down"/>
-          <Border Width="28" Height="28" CornerRadius="14" Background="#FFFF5CA8" Cursor="Hand"
-                  Tag="FF5CA8|FF8AC4" PreviewMouseLeftButtonDown="Swatch_Down"/>
+          <Border Width="28" Height="28" CornerRadius="14" Background="#FFFF5C5C" Cursor="Hand" Margin="0,0,10,0" Tag="FF5C5C|FF8A5C" PreviewMouseLeftButtonDown="Swatch_Down"/>
+          <Border Width="28" Height="28" CornerRadius="14" Background="#FF4C8DFF" Cursor="Hand" Margin="0,0,10,0" Tag="4C8DFF|7BB0FF" PreviewMouseLeftButtonDown="Swatch_Down"/>
+          <Border Width="28" Height="28" CornerRadius="14" Background="#FFB57BFF" Cursor="Hand" Margin="0,0,10,0" Tag="B57BFF|D6A8FF" PreviewMouseLeftButtonDown="Swatch_Down"/>
+          <Border Width="28" Height="28" CornerRadius="14" Background="#FF2FD9A0" Cursor="Hand" Margin="0,0,10,0" Tag="2FD9A0|5CE6BC" PreviewMouseLeftButtonDown="Swatch_Down"/>
+          <Border Width="28" Height="28" CornerRadius="14" Background="#FFFF5CA8" Cursor="Hand" Tag="FF5CA8|FF8AC4" PreviewMouseLeftButtonDown="Swatch_Down"/>
         </StackPanel>
 
-        <TextBlock Text="SAYDAMLIK" Foreground="#FF8A8A94" FontSize="9" FontWeight="Bold" Margin="0,18,0,6"/>
-        <Slider x:Name="OpacitySlider" Style="{StaticResource Slim}" Foreground="{Binding AccentBrush}"
-                Minimum="55" Maximum="100" Value="97" ValueChanged="Opacity_Changed"/>
+        <TextBlock Text="GORUNUM" Foreground="#FF8A8A94" FontSize="9" FontWeight="Bold" Margin="0,16,0,8"/>
+        <StackPanel Orientation="Horizontal">
+          <Border x:Name="ModeCardBtn" CornerRadius="8" Height="30" Width="108" Background="#FF2A2A36" BorderBrush="White" BorderThickness="0" Cursor="Hand" Margin="0,0,9,0" Tag="card" PreviewMouseLeftButtonDown="Mode_Down">
+            <TextBlock Text="Kart" Foreground="#FFE8E8EC" FontSize="11" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+          </Border>
+          <Border x:Name="ModeBarBtn" CornerRadius="8" Height="30" Width="108" Background="#FF2A2A36" BorderBrush="White" BorderThickness="0" Cursor="Hand" Tag="bar" PreviewMouseLeftButtonDown="Mode_Down">
+            <TextBlock Text="Kompakt cubuk" Foreground="#FFE8E8EC" FontSize="11" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+          </Border>
+        </StackPanel>
+
+        <TextBlock Text="SAYDAMLIK" Foreground="#FF8A8A94" FontSize="9" FontWeight="Bold" Margin="0,16,0,6"/>
+        <Slider x:Name="OpacitySlider" Style="{StaticResource Slim}" Foreground="{Binding AccentBrush}" Minimum="55" Maximum="100" Value="97" ValueChanged="Opacity_Changed"/>
 
         <Button Content="Tamam" Click="SettingsClose_Click" Cursor="Hand" Margin="0,18,0,0" Height="32" Focusable="False">
           <Button.Template>
             <ControlTemplate TargetType="Button">
               <Border CornerRadius="9" Background="{Binding PlayGradient}">
-                <TextBlock Text="Tamam" Foreground="White" FontWeight="SemiBold" FontSize="12"
-                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <TextBlock Text="Tamam" Foreground="White" FontWeight="SemiBold" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
               </Border>
             </ControlTemplate>
           </Button.Template>
@@ -174,21 +183,16 @@
       </StackPanel>
     </Border>
 
-    <!-- ===================== ORB (kucultulmus) ===================== -->
-    <Border x:Name="MiniOrb" Width="60" Height="60" Margin="12" CornerRadius="30" Cursor="Hand"
+    <!-- ===================== ORB ===================== -->
+    <Border x:Name="MiniOrb" Width="60" Height="60" Margin="10" CornerRadius="30" Cursor="Hand"
             Background="#FF1B1B24" BorderThickness="1.5" Visibility="Collapsed" ToolTip="Ac (tikla) / surukle">
       <Border.BorderBrush>
-        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-          <GradientStop Color="#AAFF5C5C" Offset="0"/><GradientStop Color="#44FFFFFF" Offset="1"/>
-        </LinearGradientBrush>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#AAFF5C5C" Offset="0"/><GradientStop Color="#44FFFFFF" Offset="1"/></LinearGradientBrush>
       </Border.BorderBrush>
       <Border.Effect><DropShadowEffect Color="#FF5C5C" BlurRadius="18" ShadowDepth="0" Opacity="0.5"/></Border.Effect>
       <Grid>
-        <TextBlock Text="&#x266B;" Foreground="#FF77777F" FontSize="20" FontFamily="Segoe UI Symbol"
-                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <Border CornerRadius="30">
-          <Border.Background><ImageBrush ImageSource="{Binding Cover}" Stretch="UniformToFill"/></Border.Background>
-        </Border>
+        <TextBlock Text="&#x266B;" Foreground="#FF77777F" FontSize="20" FontFamily="Segoe UI Symbol" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <Border CornerRadius="30"><Border.Background><ImageBrush ImageSource="{Binding Cover}" Stretch="UniformToFill"/></Border.Background></Border>
       </Grid>
     </Border>
 

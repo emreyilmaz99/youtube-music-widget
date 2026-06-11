@@ -135,12 +135,21 @@ public class PlayerViewModel : ObservableObject
     public double InitialOpacity => _settings.Opacity;
     public string Mode => _settings.Mode;
 
-    public (double? Left, double? Top) InitialPosition() => _settings.Mode switch
+    public (double? Left, double? Top) InitialPosition() => PositionFor(_settings.Mode);
+
+    public (double? Left, double? Top) PositionFor(string mode) => mode switch
     {
         "bar" => (_settings.BarLeft, _settings.BarTop),
         "edge" => (_settings.EdgeLeft, _settings.EdgeTop),
         _ => (_settings.CardLeft, _settings.CardTop),
     };
+
+    public void SetMode(string mode)
+    {
+        _settings.Mode = mode;
+        _settingsService.Save(_settings);
+        OnPropertyChanged(nameof(Mode));
+    }
 
     public void SavePosition(double left, double top)
     {
